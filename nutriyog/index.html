@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nutri Yog! · Yogurt helado & Açaí</title>
+  <meta name="description" content="Nutri Yog! — yogurt helado, açaí, churros y canolis en Ciudad Jardín, Buenos Aires. Desde 2012.">
+  <meta name="theme-color" content="#EB92B2">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ============ NAV ============ -->
+  <nav class="nav" id="nav">
+    <a href="#top" class="nav__logo" aria-label="Nutri Yog! inicio">
+      <span>NUTRI</span><span>YOG!</span>
+    </a>
+    <ul class="nav__links">
+      <li><a href="#nosotros">Nosotros</a></li>
+      <li><a href="#variedades">Variedades</a></li>
+      <li><a href="#experiencia">Experiencia</a></li>
+      <li><a href="#horarios">Horarios</a></li>
+    </ul>
+    <a class="nav__ig" href="https://www.instagram.com/nutriyogcj" target="_blank" rel="noopener">@nutriyogcj</a>
+  </nav>
+
+  <!-- ============ HERO: armado de yogures por scroll ============ -->
+  <header class="hero" id="top" data-variant="0">
+    <div class="hero__stage">
+      <svg class="hero__blobs" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <path class="blob blob--a" d="M-80 120 C120 40 260 220 180 360 C110 480 -40 470 -90 380 Z"/>
+        <path class="blob blob--b" d="M1290 520 C1120 430 980 560 1040 700 C1090 820 1260 860 1300 760 Z"/>
+        <path class="blob blob--c" d="M880 -60 C980 40 1180 10 1240 -40 L1240 -120 L860 -120 Z"/>
+      </svg>
+
+      <div class="hero__copy">
+        <p class="kicker">Yogurt helado · Ciudad Jardín</p>
+        <div class="hero__variants">
+          <article class="variant is-active" data-i="0">
+            <h1 class="variant__title">Clásico <em>Nutri</em></h1>
+            <p class="variant__lead">Nuestro yogurt helado de siempre, con frutillas y crocante.</p>
+            <ol class="steps">
+              <li>Yogurt helado natural</li>
+              <li>Salsa de dulce de leche</li>
+              <li>Frutillas frescas</li>
+              <li>Granola crocante</li>
+            </ol>
+          </article>
+          <article class="variant" data-i="1">
+            <h2 class="variant__title">Açaí <em>Bowl</em></h2>
+            <p class="variant__lead">Açaí bien frío, con fruta y miel. Energía pura.</p>
+            <ol class="steps">
+              <li>Base de açaí</li>
+              <li>Hilo de miel</li>
+              <li>Banana y frutillas</li>
+              <li>Granola y coco</li>
+            </ol>
+          </article>
+          <article class="variant" data-i="2">
+            <h2 class="variant__title">Frutos <em>Rojos</em></h2>
+            <p class="variant__lead">Yogurt helado con salsa de frutos del bosque.</p>
+            <ol class="steps">
+              <li>Yogurt helado natural</li>
+              <li>Salsa de frutos rojos</li>
+              <li>Arándanos</li>
+              <li>Frambuesas y moras</li>
+            </ol>
+          </article>
+        </div>
+        <div class="hero__dots" aria-hidden="true"><i></i><i></i><i></i></div>
+      </div>
+
+      <div class="hero__art">
+        <svg id="yogurt" viewBox="0 0 400 560" role="img" aria-label="Animación: se arma un yogurt Nutri Yog! con sus toppings"></svg>
+      </div>
+
+      <p class="hero__hint" aria-hidden="true">Scrolleá para armar tu Nutri <span>↓</span></p>
+    </div>
+  </header>
+
+  <!-- ============ MARQUEE ============ -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track">
+      <span>yogurt helado</span><b>✿</b><span>açaí</span><b>✿</b><span>churros</span><b>✿</b><span>canolis</span><b>✿</b><span>toppings</span><b>✿</b>
+      <span>yogurt helado</span><b>✿</b><span>açaí</span><b>✿</b><span>churros</span><b>✿</b><span>canolis</span><b>✿</b><span>toppings</span><b>✿</b>
+    </div>
+  </div>
+
+  <main>
+    <!-- ============ NOSOTROS ============ -->
+    <section class="about" id="nosotros">
+      <div class="about__collage reveal">
+        <figure class="polaroid polaroid--1"><img src="assets/img/terraza-dia.jpg" alt="La terraza de Nutri Yog! con flores rosas y mesas al sol" loading="lazy"></figure>
+        <figure class="polaroid polaroid--2"><img src="assets/img/vasos.jpg" alt="Pilas de vasos Nutri Yog! y el cartel de neón" loading="lazy"></figure>
+        <figure class="polaroid polaroid--3"><img src="assets/img/branding.jpg" alt="Cuchara con yogurt Nutri Yog! y frutos rojos" loading="lazy" style="object-position:50% 75%"></figure>
+        <span class="sticker">desde<br><strong>2012</strong></span>
+      </div>
+
+      <div class="about__text reveal">
+        <p class="kicker">Quiénes somos</p>
+        <h2>Un rincón rosa en el corazón de <em>Ciudad Jardín</em></h2>
+        <p>Nutri Yog! nació en 2012 con una idea simple: hacer el yogurt helado que nosotros mismos queríamos comer. Cremoso, fresco y con toppings de verdad. Empezamos con una máquina, un mostrador y muchas ganas, y el barrio nos fue adoptando vaso a vaso.</p>
+        <p>Hoy seguimos en la misma esquina, ahora con terraza, cerezos en flor y la misma obsesión por la calidad. Sumamos açaí, churros, canolis y un montón de combinaciones nuevas, pero lo esencial no cambió: que cada visita se sienta como un pequeño gusto bien merecido.</p>
+        <ul class="about__chips">
+          <li>Yogurt helado</li>
+          <li>Açaí</li>
+          <li>Terraza</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ VARIEDADES ============ -->
+    <section class="menu" id="variedades">
+      <header class="section-head reveal">
+        <p class="kicker">Variedades</p>
+        <h2>Mucho más que <em>yogurt</em></h2>
+        <p>Además de armar tu vaso a gusto, en el local te esperan estos clásicos.</p>
+      </header>
+
+      <div class="menu__grid">
+        <article class="card card--big card--pink reveal">
+          <img src="assets/img/yogurt-clasico.jpg" alt="Yogurt helado con frutillas, granola y salsas" loading="lazy">
+          <div class="card__body">
+            <span class="tag">El favorito</span>
+            <h3>Yogurt helado</h3>
+            <p>Natural, cremoso y con todos los toppings que quieras.</p>
+          </div>
+        </article>
+        <article class="card card--green reveal">
+          <img src="assets/img/acai-vasos.jpg" alt="Vasos de açaí y yogurt helado frente a la estufa" loading="lazy" style="object-position:50% 80%">
+          <div class="card__body">
+            <span class="tag">Superfood</span>
+            <h3>Açaí</h3>
+            <p>En bowl o en vaso, con fruta, granola y miel.</p>
+          </div>
+        </article>
+        <article class="card card--yellow reveal">
+          <img src="assets/img/churros.jpg" alt="Churros bañados en chocolate rellenos de dulce de leche" loading="lazy">
+          <div class="card__body">
+            <span class="tag">Recién hechos</span>
+            <h3>Churros</h3>
+            <p>Rellenos de dulce de leche y bañados en chocolate.</p>
+          </div>
+        </article>
+        <article class="card card--pink reveal">
+          <img src="assets/img/canolis.jpg" alt="Canolis crocantes rellenos de dulce de leche" loading="lazy">
+          <div class="card__body">
+            <span class="tag">Crocantes</span>
+            <h3>Canolis</h3>
+            <p>Masa crocante y bien cargados de dulce de leche.</p>
+          </div>
+        </article>
+        <article class="card card--green reveal">
+          <img src="assets/img/frutos-rojos.jpg" alt="Yogurt helado con salsa y frutos rojos" loading="lazy">
+          <div class="card__body">
+            <span class="tag">De estación</span>
+            <h3>Frutos rojos</h3>
+            <p>Arándanos, frambuesas y moras con salsa casera.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ EXPERIENCIA ============ -->
+    <section class="exp" id="experiencia">
+      <div class="exp__intro reveal">
+        <p class="kicker">La experiencia</p>
+        <h2>No es solo un yogurt.<br><em>Es un plan.</em></h2>
+        <p>En Nutri Yog! te servimos un yogurt de la máxima calidad, pero también un lugar para quedarte: sentarte bajo los cerezos, juntarte con amigos alrededor del fuego y sacar la foto del día.</p>
+      </div>
+
+      <div class="exp__grid">
+        <figure class="exp__video reveal">
+          <video src="assets/video/cerezos.mp4" poster="assets/img/cerezos-poster.jpg" muted loop playsinline autoplay preload="metadata"></video>
+          <figcaption>Primavera en Nutri 🌸</figcaption>
+        </figure>
+
+        <div class="exp__features">
+          <div class="feature reveal">
+            <span class="feature__icon">✿</span>
+            <div><h3>Terraza bajo los cerezos</h3><p>Mesas rosas, flores todo el año y sol de tarde en plena Ciudad Jardín.</p></div>
+          </div>
+          <div class="feature reveal">
+            <span class="feature__icon">☀︎</span>
+            <div><h3>Aún con frío, se disfruta</h3><p>Estufas en la terraza para que el yogurt también sea plan de invierno.</p></div>
+          </div>
+          <div class="feature reveal">
+            <span class="feature__icon">♡</span>
+            <div><h3>Hecho para compartir</h3><p>Vasos para uno, bowls para dos y combinaciones para toda la mesa.</p></div>
+          </div>
+          <figure class="exp__photo reveal"><img src="assets/img/terraza-noche.jpg" alt="Terraza de noche con estufa y cerezos iluminados" loading="lazy"></figure>
+        </div>
+      </div>
+
+      <!-- Horarios -->
+      <div class="hours" id="horarios">
+        <div class="hours__card reveal">
+          <div class="hours__head">
+            <div>
+              <p class="kicker">Horarios</p>
+              <h2>Te esperamos</h2>
+            </div>
+            <span class="status" id="status">—</span>
+          </div>
+          <ul class="hours__list" id="hours"></ul>
+          <p class="hours__addr">📍 Ciudad Jardín, Buenos Aires · <a href="https://www.instagram.com/nutriyogcj" target="_blank" rel="noopener">@nutriyogcj</a></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__logo"><span>NUTRI</span><span>YOG!</span><small>yogurt helado</small></div>
+    <p>Ciudad Jardín · Buenos Aires · Desde 2012</p>
+    <a href="https://www.instagram.com/nutriyogcj" target="_blank" rel="noopener" class="btn">Seguinos en Instagram</a>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
