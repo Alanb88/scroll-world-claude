@@ -1,5 +1,5 @@
 /* ==========================================================
-   Nutri Yog! — landing
+   Nutri Yog! landing
    1) Hero: se arman 3 yogures (Clásico / Açaí / Frutos rojos)
       capa por capa a medida que scrolleás.
    2) Reveals, nav, horarios con "abierto ahora".
@@ -328,65 +328,105 @@
     return [PH.base, PH.drizzle, PH.a, PH.b].map(([a, b]) => t >= a + (b - a) * .5);
   };
 
-  /* ---------- scroll del hero ---------- */
+  /* ---------- scroll del hero ----------
+     Port de la lógica de skills/scroll-world/references/scrub-engine.js:
+     - cadena de segmentos (un capítulo por yogur) con peso de scroll propio en vh,
+       y la altura del hero calculada en layout() a partir de esos pesos;
+     - el scroll solo fija un `target` por segmento; un loop de rAF lo persigue con
+       lerp (cur += (target - cur) * 0.18), así el armado se siente suave;
+     - fundido de CROSSFADE vh en cada corte entre capítulos (smooth);
+     - puntos de navegación que saltan al medio de cada capítulo (jumpTo);
+     - en táctiles se ignoran los resize que solo cambian el alto (barra de URL);
+     - con prefers-reduced-motion no hay lerp ni armado: se ve cada yogur terminado
+       y solo se funden entre sí. */
+  const CHAPTERS = [{ scroll: 2.1 }, { scroll: 2.1 }, { scroll: 2.1 }]; // vh de scroll por yogur
+  const CROSSFADE = 0.32;                                                 // ancho del corte (vh)
+  const LERP = 0.18;
+
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const coarse = window.matchMedia("(hover: none) and (pointer: coarse)").matches;
   const hero = document.querySelector(".hero");
+  const nav = document.getElementById("nav");
   const variantsEl = [...document.querySelectorAll(".variant")];
-  const dots = [...document.querySelectorAll(".hero__dots i")];
-  const hint = document.querySelector(".hero__hint");
+  const dots = [...document.querySelectorAll(".hero__dots button")];
   const blobs = [...document.querySelectorAll(".blob")];
   const N = sets.length;
-  const EDGE = .07; // fracción de cada capítulo usada para la transición
+  const smooth = (x) => { x = clamp(x); return x * x * (3 - 2 * x); };
 
-  let active = -1;
-  const update = () => {
-    const rect = hero.getBoundingClientRect();
-    const total = hero.offsetHeight - window.innerHeight;
-    const p = clamp(-rect.top / total);
-    const g = p * N;
+  const SEGMENTS = sets.map((set, i) => ({ set, w: (CHAPTERS[i] || {}).scroll || 2, cur: 0, target: 0, op: 0, x: 0 }));
+  let vh = window.innerHeight, laidOutW = window.innerWidth, heroTop = 0, totalW = 0, active = -1, ticking = false, running = false;
 
-    sets.forEach((s, i) => {
-      const local = g - i;
-      let x = 0, y = 0, rot = 0, op = 1, vis = true;
-      if (i > 0 && local < 0) {             // entra desde la derecha
-        const e = seg(local, -EDGE, 0);
-        if (e <= 0) vis = false;
-        x = (1 - easeOut(e)) * 260; rot = (1 - e) * 10; op = e;
-      } else if (i < N - 1 && local > 1 - EDGE) { // sale hacia la izquierda
-        const e = seg(local, 1 - EDGE, 1);
-        if (e >= 1) vis = false;
-        x = -easeInOut(e) * 160; rot = -e * 8; op = 1 - e; y = -e * 40;
-      }
-      s.g.style.display = vis ? "" : "none";
-      if (!vis) return;
-      s.g.setAttribute("transform", `translate(${x} ${y}) rotate(${rot} 200 520)`);
-      s.g.setAttribute("opacity", op);
-      const done = renderSet(s, clamp(local));
-      if (i === Math.min(N - 1, Math.floor(g + EDGE / 2))) {
-        variantsEl[i].querySelectorAll(".steps li").forEach((li, k) => li.classList.toggle("is-done", done[k]));
-      }
+  function layout() {
+    vh = window.innerHeight;
+    laidOutW = window.innerWidth;
+    let off = 0;
+    SEGMENTS.forEach((s) => { s.start = off * vh; off += s.w; s.end = off * vh; });
+    totalW = off;
+    hero.style.height = `${(totalW + 1) * vh}px`; // +1vh para que el último yogur termine
+    heroTop = hero.getBoundingClientRect().top + window.scrollY;
+    read();
+  }
+
+  function jumpTo(i) {
+    const s = SEGMENTS[i];
+    window.scrollTo({ top: heroTop + s.start + (s.end - s.start) * 0.88, behavior: reduce ? "auto" : "smooth" });
+  }
+  dots.forEach((d, i) => d.addEventListener("click", () => jumpTo(i)));
+
+  // lee el scroll: fija targets, opacidad y posición de cada yogur, y el capítulo activo
+  function read() {
+    const y = window.scrollY - heroTop;
+    // El corte se parte al medio: el yogur que termina sale en la primera mitad y el
+    // siguiente entra en la segunda, para que nunca se superpongan dos vasos.
+    const half = (CROSSFADE * vh) / 2;
+    let ci = 0;
+    SEGMENTS.forEach((s, i) => { if (y >= s.start) ci = i; });
+
+    SEGMENTS.forEach((s, i) => {
+      s.target = reduce ? 1 : clamp((y - s.start) / (s.end - s.start));
+      let op = 1, dir = 0;
+      if (i > 0 && y < s.start + half) { op = smooth((y - s.start) / half); dir = 1; }            // entra por la derecha
+      else if (i < N - 1 && y > s.end - half) { op = smooth((s.end - y) / half); dir = -1; }     // sale por la izquierda
+      s.op = op;
+      s.x = reduce ? 0 : dir * (1 - op) * 180;
     });
 
-    const a = Math.min(N - 1, Math.floor(g + EDGE / 2));
-    if (a !== active) {
-      active = a;
-      hero.dataset.variant = a;
-      variantsEl.forEach((el, k) => el.classList.toggle("is-active", k === a));
-      dots.forEach((d, k) => d.classList.toggle("is-active", k === a));
+    if (ci !== active) {
+      active = ci;
+      hero.dataset.variant = ci;
+      variantsEl.forEach((el, k) => el.classList.toggle("is-active", k === ci));
+      dots.forEach((d, k) => { d.classList.toggle("is-active", k === ci); d.setAttribute("aria-current", k === ci ? "step" : "false"); });
     }
-    if (hint) hint.style.opacity = p > .015 ? 0 : 1;
-    blobs.forEach((b, k) => (b.style.transform = `translate(${(k % 2 ? -1 : 1) * p * 120}px, ${p * (k + 1) * 60}px)`));
-  };
-
-  let ticking = false;
-  const onScroll = () => {
-    if (!ticking) { ticking = true; requestAnimationFrame(() => { update(); ticking = false; }); }
+    const p = clamp(y / (totalW * vh));
+    if (!reduce) blobs.forEach((b, k) => (b.style.transform = `translate(${(k % 2 ? -1 : 1) * p * 120}px, ${p * (k + 1) * 60}px)`));
     nav.classList.toggle("is-scrolled", window.scrollY > 40);
-  };
-  const nav = document.getElementById("nav");
-  window.addEventListener("scroll", onScroll, { passive: true });
-  window.addEventListener("resize", onScroll);
-  update();
-  onScroll();
+    ticking = false;
+    if (!running) { running = true; requestAnimationFrame(raf); }
+  }
+
+  // persigue los targets con lerp y dibuja; se apaga solo cuando todo llegó
+  function raf() {
+    let moving = false;
+    SEGMENTS.forEach((s, i) => {
+      const d = s.target - s.cur;
+      s.cur = reduce || Math.abs(d) < 0.0005 ? s.target : s.cur + d * LERP;
+      if (s.cur !== s.target) moving = true;
+      const vis = s.op > 0.001;
+      s.set.g.style.display = vis ? "" : "none";
+      if (!vis) return;
+      s.set.g.setAttribute("transform", `translate(${s.x.toFixed(1)} 0) rotate(${(s.x / 22).toFixed(2)} 200 520)`);
+      s.set.g.setAttribute("opacity", s.op.toFixed(3));
+      const done = renderSet(s.set, s.cur);
+      if (i === active) variantsEl[i].querySelectorAll(".steps li").forEach((li, k) => li.classList.toggle("is-done", done[k]));
+    });
+    if (moving) requestAnimationFrame(raf); else running = false;
+  }
+
+  window.addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(read); } }, { passive: true });
+  window.addEventListener("resize", () => { if (coarse && window.innerWidth === laidOutW) return; layout(); });
+  window.addEventListener("orientationchange", layout);
+  window.addEventListener("load", layout);
+  layout();
 
   /* ---------- reveals ---------- */
   const io = new IntersectionObserver((entries) => {
@@ -421,14 +461,14 @@
       const [day, o, c] = HOURS[d];
       const li = document.createElement("li");
       if (d === today) li.classList.add("is-today");
-      li.innerHTML = `<span>${day}${d === today ? " · hoy" : ""}</span><time>${o} – ${c} hs</time>`;
+      li.innerHTML = `<span>${day}${d === today ? " · hoy" : ""}</span><time>${o} a ${c} hs</time>`;
       list.appendChild(li);
     });
 
     const [a, b] = span(HOURS[today]);
     const [pa, pb] = span(HOURS[(today + 6) % 7]);
     const open = (now >= a && now < b) || (pb > 1440 && now < pb - 1440 && pa < 1440);
-    statusEl.textContent = open ? "● Abierto ahora" : "● Cerrado ahora";
+    statusEl.textContent = open ? "Abierto ahora" : "Cerrado ahora";
     statusEl.classList.add(open ? "is-open" : "is-closed");
   }
 })();
