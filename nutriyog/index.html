@@ -27,60 +27,29 @@
     <a class="nav__ig" href="https://www.instagram.com/nutriyogcj" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-instagram-logo"/></svg>Instagram</a>
   </nav>
 
-  <!-- ============ HERO: armado de yogures por scroll ============ -->
-  <header class="hero" id="top" data-variant="0">
-    <div class="hero__stage">
-      <svg class="hero__blobs" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-        <path class="blob blob--a" d="M-80 120 C120 40 260 220 180 360 C110 480 -40 470 -90 380 Z"/>
-        <path class="blob blob--b" d="M1290 520 C1120 430 980 560 1040 700 C1090 820 1260 860 1300 760 Z"/>
-        <path class="blob blob--c" d="M880 -60 C980 40 1180 10 1240 -40 L1240 -120 L860 -120 Z"/>
-      </svg>
-
-      <div class="hero__copy">
-        <p class="kicker">Yogurt helado · Ciudad Jardín</p>
-        <div class="hero__variants">
-          <article class="variant is-active" data-i="0">
-            <h1 class="variant__title">Clásico <em>Nutri</em></h1>
-            <p class="variant__lead">Nuestro yogurt helado de siempre, con frutillas y crocante.</p>
-            <ol class="steps">
-              <li>Yogurt helado natural</li>
-              <li>Salsa de dulce de leche</li>
-              <li>Frutillas frescas</li>
-              <li>Granola crocante</li>
-            </ol>
-          </article>
-          <article class="variant" data-i="1">
-            <h2 class="variant__title">Açaí <em>Bowl</em></h2>
-            <p class="variant__lead">Açaí bien frío, con fruta y miel. Energía pura.</p>
-            <ol class="steps">
-              <li>Base de açaí</li>
-              <li>Hilo de miel</li>
-              <li>Banana y frutillas</li>
-              <li>Granola y coco</li>
-            </ol>
-          </article>
-          <article class="variant" data-i="2">
-            <h2 class="variant__title">Frutos <em>Rojos</em></h2>
-            <p class="variant__lead">Yogurt helado con salsa de frutos del bosque.</p>
-            <ol class="steps">
-              <li>Yogurt helado natural</li>
-              <li>Salsa de frutos rojos</li>
-              <li>Arándanos</li>
-              <li>Frambuesas y moras</li>
-            </ol>
-          </article>
-        </div>
-        <div class="hero__dots" role="group" aria-label="Elegí un yogur">
-          <button type="button" aria-label="Clásico Nutri"></button>
-          <button type="button" aria-label="Açaí Bowl"></button>
-          <button type="button" aria-label="Frutos Rojos"></button>
-        </div>
-      </div>
-
-      <div class="hero__art">
-        <svg id="yogurt" viewBox="0 0 400 560" role="img" aria-label="Animación: se arma un yogurt Nutri Yog! con sus toppings"></svg>
+  <!-- ============ HERO: carrusel de sabores ============ -->
+  <header class="hero" id="top" data-hero data-flavor="vainilla">
+    <div class="hero__copy">
+      <h1 class="hero__title">Yogurt helado con <em>todo</em></h1>
+      <p class="hero__lead" data-lead aria-live="polite"><strong>Vainilla clásico.</strong> Dulce de leche, frutillas frescas y granola crocante.</p>
+      <div class="hero__ctas">
+        <a class="btn btn--primary" href="#variedades" data-magnetic>Ver variedades</a>
+        <a class="btn btn--ghost" href="#horarios" data-magnetic>Horarios</a>
       </div>
     </div>
+
+    <div class="hero__products" role="group" aria-roledescription="carrusel" aria-label="Sabores">
+      <div class="hero__stage" data-stage></div>
+      <div class="hero__flavors" role="group" aria-label="Elegí un sabor">
+        <button type="button" class="flavor-pill" data-flavor-pill aria-pressed="true"><i style="--dot:#F3E3B5"></i>Vainilla</button>
+        <button type="button" class="flavor-pill" data-flavor-pill aria-pressed="false"><i style="--dot:#5E2A6B"></i>Açaí</button>
+        <button type="button" class="flavor-pill" data-flavor-pill aria-pressed="false"><i style="--dot:#F2A7BC"></i>Frutilla</button>
+      </div>
+    </div>
+
+    <svg class="hero__wave" data-wave viewBox="0 0 1440 320" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 320 L0 120 C120 70 240 60 360 104 C480 148 600 170 720 132 C840 94 960 64 1080 96 C1200 128 1320 160 1440 128 L1440 320 Z"/>
+    </svg>
   </header>
 
   <!-- ============ MARQUEE ============ -->
@@ -212,6 +181,7 @@
     <a href="https://www.instagram.com/nutriyogcj" target="_blank" rel="noopener" class="btn"><svg class="icon" aria-hidden="true"><use href="#i-instagram-logo"/></svg>Instagram</a>
   </footer>
 
-  <script src="app.js"></script>
+  <script src="vendor/motion-11.11.17.min.js" defer></script>
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>

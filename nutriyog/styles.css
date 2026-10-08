@@ -36,7 +36,7 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: clip; }
 body {
   margin: 0;
   font-family: "Nunito", system-ui, sans-serif;
@@ -96,73 +96,77 @@ p { line-height: 1.6; }
   background: var(--pink); color: var(--white); padding: 9px 16px; border-radius: 999px;
 }
 
-/* ============ HERO ============ */
+/* ============ HERO: carrusel de sabores ============
+   Layout asimétrico: texto a la izquierda, vasos en el centro y la derecha.
+   El fondo toma el color del sabor al frente (--hero-bg, lo fija el JS) y
+   una ola crema separa los colores; los vasos se apoyan sobre ella. */
 .hero {
   position: relative;
-  height: 640vh;                 /* 3 yogures × ~210vh de scroll */
-  --bg: var(--pink-pale);
-  --blob: var(--pink);
-}
-.hero[data-variant="1"] { --bg: var(--green-soft); --blob: #BFD88A; }
-.hero[data-variant="2"] { --bg: var(--yellow-soft); --blob: var(--pink-soft); }
-
-.hero__stage {
-  position: sticky; top: 0;
-  height: 100vh; height: 100dvh;
+  isolation: isolate;
+  min-height: 100vh; min-height: 100dvh;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  grid-template-columns: minmax(0, .85fr) minmax(0, 1.35fr);
   align-items: center;
-  gap: 2vw;
-  padding: 90px clamp(16px, 6vw, 96px) 40px;
-  background: var(--bg);
-  transition: background-color .7s ease;
+  column-gap: 2vw;
+  padding: 96px clamp(16px, 5vw, 80px) 0;
+  background: var(--hero-bg, var(--pink-soft));
+  transition: background-color .7s cubic-bezier(.16, 1, .3, 1);
   overflow: hidden;
 }
-.hero__blobs { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-.blob { fill: var(--blob); opacity: .55; transition: fill .7s ease; }
-.blob--c { opacity: .35; }
-
-.hero__copy { position: relative; z-index: 2; }
-.hero__variants { position: relative; min-height: 340px; }
-.variant {
-  position: absolute; inset: 0 0 auto 0;
-  opacity: 0; transform: translateY(24px);
-  transition: opacity .45s ease, transform .45s ease;
-  pointer-events: none;
+.hero__copy { position: relative; z-index: 3; padding-bottom: 12vh; }
+.hero__title {
+  font-size: clamp(3rem, 6.4vw, 6.2rem);
+  line-height: 1;
+  letter-spacing: -.045em;
+  max-width: 8em;
 }
-.variant.is-active { opacity: 1; transform: none; pointer-events: auto; }
-.variant__title { font-size: clamp(2.8rem, 6.4vw, 5.6rem); }
-.variant__lead { font-size: 1.15rem; max-width: 30ch; margin: 14px 0 22px; color: var(--ink-soft); font-weight: 600; }
-
-.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; counter-reset: s; }
-.steps li {
-  counter-increment: s;
-  display: flex; align-items: center; gap: 12px;
-  font-weight: 800; font-size: 1.02rem;
-  opacity: .35; transform: translateX(-6px);
-  transition: opacity .3s, transform .3s;
+.hero__title em {
+  color: var(--ink);
+  background: var(--white);
+  padding: 0 .16em .08em;
+  border-radius: .28em;
+  transform: rotate(-3deg);
+  box-shadow: 0 .08em 0 rgba(29, 86, 53, .18);
 }
-.steps li::before {
-  content: counter(s);
-  display: grid; place-items: center;
-  width: 30px; height: 30px; flex: none;
-  border-radius: 50%;
-  background: var(--white); color: var(--ink);
-  font-size: .85rem;
-  transition: background .3s, color .3s;
+.hero__lead { font-size: 1.15rem; line-height: 1.55; max-width: 34ch; margin: 22px 0 0; font-weight: 600; min-height: 3.1em; }
+.hero__lead strong { font-weight: 900; }
+.hero__ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.hero__ctas .btn { margin-top: 0; }
+
+.hero__products { position: relative; z-index: 2; align-self: end; height: min(80vh, 780px); }
+.hero__stage { position: absolute; inset: 0; touch-action: pan-y; cursor: grab; }
+.hero__stage.is-dragging { cursor: grabbing; }
+.flavor-card {
+  /* el vaso al frente queda centrado en la pantalla, como en la referencia */
+  position: absolute; left: -17%; bottom: 11%;
+  width: min(34vw, 58vh, 500px);
+  aspect-ratio: 400 / 560;
+  padding: 0; border: 0; background: none; cursor: pointer;
+  transform-origin: 50% 100%;
+  will-change: transform, opacity;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none; -webkit-user-select: none;
 }
-.steps li.is-done { opacity: 1; transform: none; }
-.steps li.is-done::before { content: "✓"; background: var(--ink); color: var(--green); }
+.flavor-card[aria-current="true"] { cursor: grab; }
+.flavor-card__tilt { display: block; width: 100%; height: 100%; transform-origin: 50% 70%; }
+.cup-svg { display: block; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.flavor-card:focus-visible { outline: 3px solid var(--ink); outline-offset: 8px; border-radius: var(--radius); }
 
-.hero__dots { display: flex; gap: 8px; margin-top: 26px; }
-.hero__dots button { width: 12px; height: 12px; padding: 0; border: 0; border-radius: 999px; background: var(--ink); opacity: .2; cursor: pointer; transition: width .3s, opacity .3s; }
-.hero__dots button:hover { opacity: .45; }
-.hero__dots button.is-active { width: 36px; opacity: 1; }
+.hero__flavors { position: absolute; left: 8%; bottom: 3.5%; z-index: 20; display: flex; gap: 8px; }
+.flavor-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  font: 800 .95rem/1 "Nunito", system-ui, sans-serif;
+  color: var(--ink); background: transparent;
+  border: 2px solid var(--ink); border-radius: 999px;
+  padding: 9px 16px; cursor: pointer;
+  transition: background-color .25s, color .25s;
+}
+.flavor-pill i { width: 12px; height: 12px; border-radius: 999px; background: var(--dot); box-shadow: inset 0 0 0 1.5px rgba(29, 86, 53, .3); }
+.flavor-pill:hover { background: rgba(29, 86, 53, .08); }
+.flavor-pill[aria-pressed="true"] { background: var(--ink); color: var(--white); }
+.flavor-pill:active { scale: .98; }
 
-.hero__art { position: relative; z-index: 1; height: 100%; display: grid; place-items: center; }
-#yogurt { width: 100%; height: 100%; max-height: 86vh; overflow: visible; }
-#yogurt .part { transform-box: fill-box; }
-
+.hero__wave { position: absolute; left: 0; bottom: 0; z-index: 1; width: 100%; height: 30%; fill: var(--cream); pointer-events: none; }
 
 /* ============ MARQUEE ============ */
 .marquee { background: var(--pink); color: var(--white); overflow: hidden; padding: 18px 0; transform: rotate(-1.2deg); margin: -10px -20px 0; position: relative; z-index: 3; }
@@ -304,12 +308,16 @@ section { padding: clamp(80px, 11vw, 150px) clamp(16px, 6vw, 96px); }
 .footer__logo small { font-size: 1rem; letter-spacing: 0; margin-top: 8px; font-weight: 800; }
 .footer p { margin: 0; font-weight: 700; color: var(--ink-soft); }
 .btn {
-  display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; text-decoration: none; font-weight: 900;
-  background: var(--ink); color: var(--green); padding: 14px 26px; border-radius: 999px;
-  transition: transform .2s;
+  display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; text-decoration: none; font-weight: 900; white-space: nowrap;
+  background: var(--ink); color: var(--green); padding: 14px 26px; border-radius: 999px; border: 2px solid var(--ink);
+  transition: background-color .25s, color .25s;
 }
-.btn:hover { transform: translateY(-3px); }
-.btn:active, .nav__ig:active { transform: scale(.98); }
+.btn--primary { color: var(--white); }
+.btn--primary:hover { background: #164a2c; }
+.btn--ghost { background: transparent; color: var(--ink); }
+.btn--ghost:hover { background: rgba(29, 86, 53, .08); }
+/* el `transform` lo maneja el efecto magnético; el empuje al clic usa `scale` */
+.btn:active, .nav__ig:active { scale: .98; }
 
 /* ============ REVEAL ============ */
 .reveal { opacity: 0; transform: translateY(40px); transition: opacity .8s ease, transform .8s cubic-bezier(.2, .8, .2, 1); }
@@ -319,23 +327,6 @@ section { padding: clamp(80px, 11vw, 150px) clamp(16px, 6vw, 96px); }
 /* ============ RESPONSIVE ============ */
 @media (max-width: 900px) {
   .nav__links { display: none; }
-  .hero { height: 560vh; }
-  .hero__stage {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-    padding-top: 78px; padding-bottom: 56px;
-    gap: 0;
-  }
-  .hero__variants { min-height: 0; display: grid; }
-  .variant { position: static; grid-area: 1 / 1; }
-  .variant__title { font-size: clamp(2.3rem, 10vw, 3.4rem); }
-  .variant__lead { font-size: 1rem; margin: 6px 0 12px; }
-  .steps { grid-template-columns: 1fr 1fr; gap: 6px 10px; }
-  .steps li { font-size: .82rem; gap: 8px; }
-  .steps li::before { width: 22px; height: 22px; font-size: .7rem; }
-  .hero__dots { margin-top: 12px; }
-  .hero__art { min-height: 0; }
-  #yogurt { max-height: 100%; }
 
   .about { grid-template-columns: 1fr; }
   .about__collage { max-width: 520px; width: 100%; margin: 0 auto; }
@@ -343,6 +334,19 @@ section { padding: clamp(80px, 11vw, 150px) clamp(16px, 6vw, 96px); }
   .card--big { grid-column: span 2; grid-row: span 1; }
   .exp__grid { grid-template-columns: 1fr; }
   .exp__video { max-width: 360px; margin: 0 auto; width: 100%; }
+}
+@media (max-width: 767px) {
+  .hero { grid-template-columns: 1fr; align-items: start; padding-top: 84px; min-height: 0; }
+  .hero__copy { padding-bottom: 0; }
+  .hero__title { font-size: clamp(2.6rem, 12.5vw, 3.8rem); }
+  .hero__lead { font-size: 1rem; margin-top: 14px; }
+  .hero__ctas { margin-top: 18px; }
+  .btn { padding: 12px 20px; }
+  .hero__products { height: max(360px, 54dvh); }
+  .flavor-card { width: min(68vw, 44dvh, 340px); left: 2%; bottom: 13%; }
+  .hero__flavors { left: 50%; transform: translateX(-50%); bottom: 3%; }
+  .flavor-pill { padding: 8px 12px; font-size: .88rem; }
+  .hero__wave { height: 24%; }
 }
 @media (max-width: 560px) {
   .nav__ig { font-size: .8rem; padding: 8px 12px; }

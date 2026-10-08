@@ -1,21 +1,39 @@
-# Nutri Yog! — landing page
+# Nutri Yog! landing page
 
-Landing estática (HTML + CSS + JS, sin dependencias). Abrí `index.html` o serví la carpeta:
+Landing estática (HTML + CSS + JS en módulos, sin build). Usa módulos ES, así que hay que abrirla con un servidor local (no funciona con doble clic sobre `index.html`):
 
 ```bash
+cd nutriyog
 python3 -m http.server 8000   # → http://localhost:8000
+# o: npx serve .
 ```
 
-## Secciones
-1. **Hero con animación por scroll**: se arman 3 yogures (Clásico, Açaí, Frutos rojos), del vaso vacío a la base, la salsa, los toppings y la cuchara. Todo es SVG generado en `app.js` (`VARIANTS`), así que se pueden sumar variantes o cambiar toppings y colores. El scroll usa la lógica del motor del repo (`skills/scroll-world/references/scrub-engine.js`): un segmento por yogur con su propio largo (`CHAPTERS`, en alturas de pantalla), suavizado por frame, corte entre capítulos (`CROSSFADE`) y puntos para saltar a cada yogur.
-2. **Quiénes somos**: collage de fotos + historia.
-3. **Variedades**: yogurt helado, açaí, churros, canolis, frutos rojos.
-4. **Experiencia + horarios**: video, features del local y horarios con indicador "abierto ahora" (hora de Buenos Aires).
+## Estructura
+```
+index.html            marcado de todas las secciones
+styles.css            estilos y tokens de marca
+js/main.js            punto de entrada: inicializa cada módulo
+js/cups.js            vasos en SVG armados por capas + sabores (FLAVORS)
+js/hero-carousel.js   carrusel coverflow del hero (resortes, arrastre, tilt, ola)
+js/magnetic.js        botones magnéticos
+js/site.js            nav, aparición de secciones y horarios
+vendor/               Motion 11.11.17 (motion.dev, MIT), incluido localmente
+assets/               fotos, video y tipografía Nunito
+```
+
+## Hero
+Layout asimétrico: título a la izquierda, carrusel de sabores en el centro y la derecha, ola crema que separa los colores del fondo.
+- **Coverflow:** el vaso elegido al frente; los siguientes se escalonan hacia la derecha, más chicos y más arriba. Todo se deriva de un único valor `pos` que Motion anima con un resorte, así las interrupciones conservan la velocidad.
+- **Cómo se cambia de sabor:** píldoras de sabor, clic en un vaso de la fila, arrastre o swipe, y flechas del teclado.
+- **Al llegar al frente** los toppings vuelven a caer sobre el vaso.
+- **Fondo y ola:** el fondo cambia al color del sabor y la ola se mece con el movimiento del carrusel.
+- **Tilt 3D** sobre el vaso al frente y **botones magnéticos** (solo con mouse); empuje `scale(.98)` al hacer clic.
+- **Movimiento reducido:** sin resortes, tilt ni ola animada.
+- **Agregar o editar un sabor:** sumá un objeto a `FLAVORS` en `js/cups.js` (colores de vaso, base, salsa, toppings, color de fondo) y su píldora en `index.html`.
 
 ## Para editar
-- **Horarios**: constante `HOURS` al final de `app.js`.
-- **Textos**: `index.html`.
-- **Colores de marca**: variables en `:root` de `styles.css` (rosa `#EB92B2`, verde claro `#D7E6AD`, amarillo claro `#F8EDA6`, crema `#F3F0E4`, verde logo `#1D5635`).
-- Tipografía: Nunito, alojada en `assets/fonts/`.
+- **Horarios**: constante `HOURS` en `js/site.js`.
+- **Textos**: `index.html` (el texto de cada sabor está en `FLAVORS`).
+- **Colores de marca**: variables en `:root` de `styles.css`.
 - Íconos: Phosphor Icons (MIT), como sprite SVG al inicio de `index.html`.
-- Diseño auditado con la skill `taste-skill` (`.claude/skills/taste-skill/`).
+- Diseño auditado con `taste-skill` (`.claude/skills/taste-skill/`).
